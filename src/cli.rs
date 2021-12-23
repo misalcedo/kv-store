@@ -44,7 +44,6 @@ impl FromStr for Host {
     type Err = io::Error; 
     
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        println!("Host: {}", s);
         let mut addresses = format!("{}:0", s).as_str().to_socket_addrs()?;
         let address: io::Result<SocketAddr> = addresses.next().ok_or(io::ErrorKind::AddrNotAvailable.into());
 
@@ -56,7 +55,10 @@ impl FromStr for Host {
 
 impl fmt::Display for Host {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.address)
+        match self.address {
+            IpAddr::V4(ip) => write!(f, "{}", ip),
+            IpAddr::V6(ip) => write!(f, "[{}]", ip),
+        }
     }
 }
 

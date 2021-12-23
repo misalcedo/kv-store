@@ -27,7 +27,6 @@ pub struct ServerOptions {
 impl From<Arguments> for ServerOptions {
     fn from(arguments: Arguments) -> Self {
         let redis_path = format!("redis://{}:{}/", arguments.redis_host, arguments.redis_port);
-        println!("redis: {}", redis_path);
         let client = redis::Client::open(redis_path).expect("Unable to connect to Redis");
 
         ServerOptions {
