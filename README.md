@@ -15,6 +15,11 @@ docker build . -t kv-store
 docker run --rm -p 80:80 kv-store
 ```
 
+### With Docker Compose
+```bash
+docker-compose up
+```
+
 ### Locally
 Run development server:
 ```bash
