@@ -8,18 +8,20 @@ The goal of this project is to serve as a samplw to deploying applications in Ku
 A `Dockerfile` is included that builds the executable in release mode and listens on TCP port 80 for all interfaces in the container.
 
 ## Usage
-### Redis
+### With Docker
 ```bash
 docker run --rm -p 6379:6379 redis
+docker built . -t kv-store
+docker run --rm -p 80:80 kv-store
 ```
 
-### Server
-Run in development:
+### Locally
+Run development server:
 ```bash
-cargo run
+cargo run -- -h
 ```
 
-Install locally:
+Run release server:
 ```bash
 cargo install --path .
 kv-store -h
