@@ -3,6 +3,7 @@ services:
   webapp:
     build:
       context: ./
+    image: ghcr.io/misalcedo/kv-store
     depends_on:
       - redis
     deploy:
