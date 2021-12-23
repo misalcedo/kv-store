@@ -17,7 +17,7 @@ async fn main() {
     let address = SocketAddr::from((arguments.server_host, arguments.server_port));
     let router = build_server(arguments.into());
 
-    tracing::debug!("Server listening on {}.", address);
+    tracing::info!("Server listening on {}.", address);
 
     axum::Server::bind(&address)
         .serve(router.into_make_service())
