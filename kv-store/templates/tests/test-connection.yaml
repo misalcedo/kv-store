@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "kv-store.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "kv-store.fullname" . }}:{{ .Values.service.port }}/keys']
   restartPolicy: Never
