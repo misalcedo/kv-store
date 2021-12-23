@@ -4,6 +4,6 @@ COPY . .
 RUN cargo install --path .
 
 FROM debian:buster-slim
-RUN apt-get update && apt-get install -y extra-runtime-dependencies && rm -rf /var/lib/apt/lists/*
-COPY --from=builder /usr/local/cargo/bin/app /usr/local/bin/app
+COPY --from=builder /usr/local/cargo/bin/k8s-server /usr/local/bin/app
+EXPOSE 3000/tcp
 CMD ["app"]
