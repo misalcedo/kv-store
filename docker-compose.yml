@@ -3,8 +3,6 @@ services:
   webapp:
     build:
       context: ./
-      args:
-        redis_host: redis
     depends_on:
       - redis
     deploy:
@@ -14,6 +12,8 @@ services:
       - "80:80/tcp"
     networks:
       - application
+    environment:
+      REDIS_HOST: redis
   redis:
     image: redis
     deploy:
