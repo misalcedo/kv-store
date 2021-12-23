@@ -1,5 +1,8 @@
 use clap::{AppSettings, Parser};
-use std::net::IpAddr;
+use std::fmt;
+use std::io;
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
+use std::str::FromStr;
 
 #[derive(Parser)]
 #[clap(author, version, about)]
@@ -16,12 +19,12 @@ pub struct Arguments {
     #[clap(long, default_value = "6379")]
     /// The port for the Key-Value server to connect to Redis on.
     pub redis_port: u16,
-    #[clap(short('s'), long, default_value = "127.0.0.1")]
+    #[clap(short('s'), long, default_value = "localhost")]
     /// The address for the Key-Value server to listen on.
-    pub server_host: IpAddr,
-    #[clap(short('r'), long, default_value = "127.0.0.1")]
+    pub server_host: Host,
+    #[clap(short('r'), long, default_value = "localhost")]
     /// The address for the Key-Value server to connect to Redis on.
-    pub redis_host: IpAddr,
+    pub redis_host: Host,
     #[clap(short, long, default_value = "1024")]
     /// Limit the max number of in-flight requests.
     /// A request is in-flight from the time the request is received until the response future completes.
@@ -30,4 +33,40 @@ pub struct Arguments {
     #[clap(short, long, default_value = "10000")]
     /// Fail requests that take longer than timeout.
     pub timeout_in_millis: u64,
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub struct Host {
+    address: IpAddr
+}
+
+impl FromStr for Host {
+    type Err = io::Error; 
+    
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s == "localhost" {
+            Ok(Host {
+                address: IpAddr::V4(Ipv4Addr::LOCALHOST)
+            })
+        } else {
+            let mut addresses = format!("{}:0", s).as_str().to_socket_addrs()?;
+            let address: io::Result<SocketAddr> = addresses.next().ok_or(io::ErrorKind::AddrNotAvailable.into());
+
+            Ok(Host {
+                address: address?.ip()
+            })
+        }
+    }
+}
+
+impl fmt::Display for Host {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.address)
+    }
+}
+
+impl From<Host> for IpAddr {
+    fn from(host: Host) -> Self {
+        host.address
+    }
 }
