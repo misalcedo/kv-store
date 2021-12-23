@@ -1,3 +1,4 @@
+use crate::cli::Arguments;
 use crate::errors::KeyValueError;
 use axum::{
     body::{Body, Bytes},
@@ -17,7 +18,26 @@ use tower_http::{
     compression::CompressionLayer, trace::TraceLayer,
 };
 
-pub fn build_server(client: Client) -> Router<Body> {
+pub struct ServerOptions {
+    pub client: Client,
+    pub concurrency_limit: usize,
+    pub timeout: Duration,
+}
+
+impl From<Arguments> for ServerOptions {
+    fn from(arguments: Arguments) -> Self {
+        let redis_path = format!("redis://{}:{}/", arguments.redis_host, arguments.redis_port);
+        let client = redis::Client::open(redis_path).expect("Unable to connect to Redis");
+
+        ServerOptions {
+            client,
+            concurrency_limit: arguments.concurrency_limit,
+            timeout: Duration::from_millis(arguments.timeout_in_millis),
+        }
+    }
+}
+
+pub fn build_server(options: ServerOptions) -> Router<Body> {
     // Build our application by composing routes
     Router::new()
         .route(
@@ -36,10 +56,10 @@ pub fn build_server(client: Client) -> Router<Body> {
                 // Handle errors from middleware
                 .layer(HandleErrorLayer::new(handle_error))
                 .load_shed()
-                .concurrency_limit(1024)
-                .timeout(Duration::from_secs(10))
+                .concurrency_limit(options.concurrency_limit)
+                .timeout(options.timeout)
                 .layer(TraceLayer::new_for_http())
-                .layer(AddExtensionLayer::new(client))
+                .layer(AddExtensionLayer::new(options.client))
                 .into_inner(),
         )
 }

@@ -5,6 +5,7 @@ use std::net::IpAddr;
 #[clap(author, version, about)]
 #[clap(global_setting(AppSettings::PropagateVersion))]
 #[clap(global_setting(AppSettings::UseLongFormatForHelpSubcommand))]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Arguments {
     #[clap(short, long, parse(from_occurrences))]
     /// Make the subcommand more talkative.
@@ -21,4 +22,12 @@ pub struct Arguments {
     #[clap(short('r'), long, default_value = "127.0.0.1")]
     /// The address for the Key-Value server to connect to Redis on.
     pub redis_host: IpAddr,
+    #[clap(short, long, default_value = "1024")]
+    /// Limit the max number of in-flight requests.
+    /// A request is in-flight from the time the request is received until the response future completes.
+    /// This includes the time spent in the next layers.
+    pub concurrency_limit: usize,
+    #[clap(short, long, default_value = "10000")]
+    /// Fail requests that take longer than timeout.
+    pub timeout_in_millis: u64,
 }

@@ -14,10 +14,8 @@ async fn main() {
 
     set_verbosity(arguments.verbose);
 
-    let redis_path = format!("redis://{}:{}/", arguments.redis_host, arguments.redis_port);
-    let client = redis::Client::open(redis_path).expect("Unable to connect to Redis");
-    let router = build_server(client);
     let address = SocketAddr::from((arguments.server_host, arguments.server_port));
+    let router = build_server(arguments.into());
 
     tracing::debug!("Server listening on {}.", address);
 
