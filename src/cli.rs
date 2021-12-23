@@ -1,7 +1,7 @@
 use clap::{AppSettings, Parser};
 use std::fmt;
 use std::io;
-use std::net::{IpAddr, SocketAddr, ToSocketAddrs};
+use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
 use std::str::FromStr;
 
 #[derive(Parser)]
@@ -37,18 +37,26 @@ pub struct Arguments {
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub struct Host {
-    address: IpAddr
+    address: IpAddr,
 }
 
 impl FromStr for Host {
-    type Err = io::Error; 
-    
+    type Err = io::Error;
+
     fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if s.eq_ignore_ascii_case("localhost") {
+            return Ok(Host {
+                address: IpAddr::V4(Ipv4Addr::LOCALHOST),
+            });
+        }
+
         let mut addresses = format!("{}:0", s).as_str().to_socket_addrs()?;
-        let address: io::Result<SocketAddr> = addresses.next().ok_or(io::ErrorKind::AddrNotAvailable.into());
+        let address: io::Result<SocketAddr> = addresses
+            .next()
+            .ok_or(io::ErrorKind::AddrNotAvailable.into());
 
         Ok(Host {
-            address: address?.ip()
+            address: address?.ip(),
         })
     }
 }
