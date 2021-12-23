@@ -17,6 +17,7 @@ docker run --rm -p 80:80 kv-store
 
 ### With Docker Compose
 ```bash
+docker-compose pull
 docker-compose up
 ```
 
