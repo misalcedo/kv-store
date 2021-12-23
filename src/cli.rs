@@ -1,7 +1,7 @@
 use clap::{AppSettings, Parser};
 use std::fmt;
 use std::io;
-use std::net::{IpAddr, Ipv4Addr, SocketAddr, ToSocketAddrs};
+use std::net::{IpAddr, SocketAddr, ToSocketAddrs};
 use std::str::FromStr;
 
 #[derive(Parser)]
