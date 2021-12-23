@@ -5,5 +5,5 @@ RUN cargo install --path .
 
 FROM debian:buster-slim
 COPY --from=builder /usr/local/cargo/bin/k8s-server /usr/local/bin/app
-EXPOSE 3000/tcp
-CMD ["app"]
+EXPOSE 80/tcp
+CMD ["app", "--port 80", ]
