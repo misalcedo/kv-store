@@ -11,7 +11,7 @@ A `Dockerfile` is included that builds the executable in release mode and listen
 ### With Docker
 ```bash
 docker run --rm -p 6379:6379 redis
-docker built . -t kv-store
+docker build . -t kv-store
 docker run --rm -p 80:80 kv-store
 ```
 
