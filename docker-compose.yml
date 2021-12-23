@@ -12,6 +12,8 @@ services:
         condition: on-failure
     ports:
       - "80:80/tcp"
+    networks:
+      - application
   redis:
     image: redis
     deploy:
@@ -19,3 +21,7 @@ services:
         condition: on-failure
     ports:
       - "6379:6379/tcp"
+    networks:
+      - application
+networks:
+  application:

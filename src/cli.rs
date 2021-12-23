@@ -44,18 +44,12 @@ impl FromStr for Host {
     type Err = io::Error; 
     
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if s == "localhost" {
-            Ok(Host {
-                address: IpAddr::V4(Ipv4Addr::LOCALHOST)
-            })
-        } else {
-            let mut addresses = format!("{}:0", s).as_str().to_socket_addrs()?;
-            let address: io::Result<SocketAddr> = addresses.next().ok_or(io::ErrorKind::AddrNotAvailable.into());
+        let mut addresses = format!("{}:0", s).as_str().to_socket_addrs()?;
+        let address: io::Result<SocketAddr> = addresses.next().ok_or(io::ErrorKind::AddrNotAvailable.into());
 
-            Ok(Host {
-                address: address?.ip()
-            })
-        }
+        Ok(Host {
+            address: address?.ip()
+        })
     }
 }
 
