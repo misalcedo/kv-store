@@ -14,6 +14,8 @@ async fn main() {
 
     set_verbosity(arguments.verbose);
 
+    tracing::debug!("Running server with args: {:?}", arguments);
+
     let address = SocketAddr::from((arguments.server_host, arguments.server_port));
     let router = build_server(arguments.into());
 
