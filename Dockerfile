@@ -1,12 +1,13 @@
-FROM rust as builder
+FROM rust:alpine as builder
 WORKDIR /usr/src/app
 COPY . .
+RUN apk add libc-dev
 RUN cargo install --path .
 
-FROM debian:buster-slim
+FROM scratch
 COPY --from=builder /usr/local/cargo/bin/kv-store /usr/local/bin/kv-store
 
 EXPOSE 80/tcp
 ENV REDIS_HOST=localhost
 
-CMD ["/bin/sh", "-c", "kv-store -vv -p 80 -s 0.0.0.0 -r $REDIS_HOST"]
+CMD ["kv-store", "-vv", "-p", "80", "-s", "0.0.0.0"]

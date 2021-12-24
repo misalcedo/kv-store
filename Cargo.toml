@@ -10,7 +10,7 @@ debug = true
 
 [dependencies]
 axum = "0.4.3"
-clap = { version = "3.0.0-rc.7", features = ["derive"] }
+clap = { version = "3.0.0-rc.7", features = ["derive", "env"] }
 redis = { version = "0.21.0", features = ["tokio-comp"] }
 thiserror = "1.0"
 tokio = { version = "1.10", features = ["full"] }
