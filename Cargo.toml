@@ -11,6 +11,7 @@ debug = true
 [dependencies]
 axum = "0.4.3"
 clap = { version = "3.0.0-rc.7", features = ["derive", "env"] }
+mimalloc = "0.1.27"
 redis = { version = "0.21.0", features = ["tokio-comp"] }
 thiserror = "1.0"
 tokio = { version = "1.10", features = ["full"] }

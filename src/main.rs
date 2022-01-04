@@ -4,9 +4,14 @@ mod server;
 
 use clap::Parser;
 use cli::Arguments;
+use mimalloc::MiMalloc;
 use server::build_server;
 use std::net::SocketAddr;
 use tracing::{subscriber::set_global_default, Level};
+
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 #[tokio::main]
 async fn main() {
